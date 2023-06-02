@@ -7,11 +7,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
-
-@Transactional
+    //  @Transactional --> Đánh dấu transaction ở Repo để thao tác CSDL
+    @Transactional
 public class StudentRepositoryIMPL implements IStudentRepository{
-    @PersistenceContext
-    EntityManager em;
+        // PersistenceContext là tập các thể hiện của entity được quảnlý,tồn tại trong một kho dữ liệu
+        // EntityManager em; --> Để thao tác các câu query
+        @PersistenceContext
+        EntityManager em;
 
     @Override
     public List<Student> findALl() {
@@ -22,14 +24,17 @@ public class StudentRepositoryIMPL implements IStudentRepository{
 
     @Override
     public List<Student> findByName(String name) {
+        // createQuery--> Truy vấn động
         String qrFindByName = "SELECT st FROM Student AS st WHERE st.name LIKE :name";
         TypedQuery<Student> query = em.createQuery(qrFindByName, Student.class);
         query.setParameter("name", name);
         return query.getResultList();
     }
 
+
     @Override
     public List<Student> findByNameStatic(String name) {
+        // createNamedQuery--> Truy vấn tĩnh
         TypedQuery<Student> query = em.createNamedQuery("Student.FIND_BY_NAME", Student.class);
         query.setParameter("name","%" + name+ "%");
         return query.getResultList();
